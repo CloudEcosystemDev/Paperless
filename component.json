@@ -1,0 +1,233 @@
+{
+    "title": "Paperless Public API",
+    "description": "Welcome to the public API of Paperless.",
+    "docsUrl": "",
+    "url": "https://api.paperless.io",
+    "envVars": {
+        "OAUTH_CLIENT_ID": {
+            "description": "OAuth Client ID"
+        },
+        "OAUTH_CLIENT_SECRET": {
+            "description": "OAuth Client Secret"
+        }
+    },
+    "credentials": {
+        "fields": {
+            "server": {
+                "label": "Server",
+                "viewClass": "SelectView",
+                "model": [
+                    "https://api.paperless.io - Production",
+                    "https://api.staging.paperless.io - Staging",
+                    "--- Custom URL"
+                ],
+                "required": true
+            },
+            "otherServer": {
+                "label": "Custom Server URL",
+                "viewClass": "TextFieldView"
+            },
+            "oauth2": {
+                "label": "For more information, see https://datatracker.ietf.org/doc/html/rfc6749",
+                "viewClass": "OAuthFieldView"
+            }
+        },
+        "oauth2": {
+            "client_id": "{{OAUTH_CLIENT_ID}}",
+            "client_secret": "{{OAUTH_CLIENT_SECRET}}",
+            "auth_uri": "https://app.paperless.io/oauth/authorize",
+            "token_uri": "https://app.paperless.io/api/v1/authenticate/oauth/token",
+            "scopes": [
+                "current_user.read",
+                "document.read",
+                "document.write",
+                "webhook.read",
+                "webhook.write",
+                "submission.read",
+                "template.read"
+            ]
+        }
+    },
+    "triggers": {
+        "lookup": {
+            "main": "./lib/lookups/lookup.js",
+            "title": "Function to run a lookup",
+            "description": "Function to call an internal trigger or action"
+        },
+        "getDocuments": {
+            "main": "./lib/triggers/trigger.js",
+            "title": "Get all Documents the user has access to",
+            "description": "Returns information about all Documents the the user has access to. By default archived Documents are not\nreturned within the reponse. To return archived Documents use the `archived` filter parameter (`archived=true`).\n",
+            "callParams": {
+                "pathName": "/api/v1/documents",
+                "method": "get"
+            },
+            "metadata": {
+                "in": "./lib/schemas/getDocuments.in.json",
+                "out": "./lib/schemas/getDocuments.out.json"
+            }
+        },
+        "getTemplates": {
+            "main": "./lib/triggers/trigger.js",
+            "title": "Get all template the user has access to",
+            "description": "Returns information about all Templates the the user has access to.\n",
+            "callParams": {
+                "pathName": "/api/v1/templates",
+                "method": "get"
+            },
+            "metadata": {
+                "in": "./lib/schemas/getTemplates.in.json",
+                "out": "./lib/schemas/getTemplates.out.json"
+            }
+        },
+        "getWebhooks": {
+            "main": "./lib/triggers/trigger.js",
+            "title": "Get all Webhooks the user has access to",
+            "description": "Returns information about all webhooks for a specific OAuthApplication if the user has access.\nIf the user does not have the permission to read the webhooks of the OAuthApplication an empty array is returned.\n",
+            "callParams": {
+                "pathName": "/api/v1/webhooks",
+                "method": "get"
+            },
+            "metadata": {
+                "in": "./lib/schemas/getWebhooks.in.json",
+                "out": "./lib/schemas/getWebhooks.out.json"
+            }
+        }
+    },
+    "actions": {
+        "createDocument": {
+            "main": "./lib/actions/action.js",
+            "title": "Create a new Document",
+            "description": "Creates a new Document. You can either create a new Document from scratch, provide a `document_id` of\nan existing document that then gets duplicated, or provide a `template_id` that should be used to prepare the\nnew document from. When a document is duplicated/prepared you can also provide the same parameters as when you\nupdate a document to overwrite the values on the resulting document on creation. The `workspace_id` must be\nsubmitted in any case. When duplicating/preparing a document and the `workspace_id` differs from the workspace\nof the document or template, the new document gets duplicated \"into the workspace\" for the given `workspace_id`.\nBe aware that, to duplicate/prepare \"into another workspace\", the user needs to be able to manage documents\non both, the source and the destination, workspaces for the operation to succeed.\n\n## Advanced document creation\n\nThe `createDocument` operation provides some advanced parameters, making it possible to create a document with\nall information it needs to be dispatched, when a document is created by duplicating an existing document\nor creating the new document from a template. Advanced document creation is not possible for documents\nthat are created from scratch.\n\n### Parameter `participants`\n\nThe `participants` parameter is an object in which the keys are the `slot_name`s of the participants\nexisting in the source document or template. The values of the `participant` object are objects with\nparameters for the corresponding participant in the newly created document.\n\nExample:\n\nImagine a template with two participants with the `slot_names` `slot1` and `slot2`. The participants in the\ntemplate do not have an email or a name yet. When supplying the `participants` parameter like this:\n\n```\n{\n  \"template_id\": 1234,\n  ...\n  participants: {\n    \"slot1\": {\"email\": \"p1@example.com\", name: \"P1\"},\n    \"slot2\": {\"email\": \"p2@example.com\", name: \"P2\"}\n  }\n}\n```\n\nThe participants of the created document will have the correct values for the \"email\" and \"name\" attributes.\n\n### Parameter `tokens`\n\nThe `tokens` parameter is an object in which the keys are the `name`s of the tokens existing in the source\ndocument or template. The values of the `tokens` object are strings and represent the values that will\nbe assigned to the tokens of the newly created document.\n\n### Parameter `blocks`\n\nThe `blocks` parameter is an object in which the keys are the `slug`s of the blocks existing in the source\ndocument or template. The values of the `blocks` object are objects which values will\nbe assigned to the blocks of the newly created document. Not all block values are allowed.\nA list of allowed keys can be found in the parameter's schema.\n\nHINT: As the IDs of child blocks that would act as default values for checkbox, radio and select inputs are not\n      existent before the document is created, it is necessary to use the `default_value_from_value` attribute\n      to set default_values of those input blocks. The server will map the default_value of\n      the blocks by searching for the correct child blocks when they were created.\n\n## Direct dispatch\n\nIt is possible to directly dispatch a document after its creation without the need for an additional call\nto the `updateDocument` operation. A requirement to do so is, that all information required to dispatch\nthe document were provided (participants, tokens etc.).\n\nTo directly dispatch a document, after it was created, the client needs to supply the `state` with a value\nof `dispatched`.\n\n## Initial participants dispatch strategy\n\nNormally the client creating a document will never be able to read tokens of any participants\nand the tokens are only distributed directly to the participants via email. Because this\napplies some restrictions for external clients integrating with Paperless, it is possible to set an\n`participants_dispatch_strategy` parameter when a document is created and directly dispatched.\nProviding this parameter will mark the participants which are at first turn\nas `state = dispatch_completed` and assigned them the `dispatch_strategy`\n`api_response_initial_participants`. As long as those\nparticipants are in a state which allows them to participate their token will be serialized in the response for\nthe document. The client is then responsible to deliver the tokens to the participants as they will not get an\nemail with their token from Paperless.\n\nNOTE: Only the participants at the first turn will be marked with the `dispatch_strategy`\n`api_response_initial_participants`. All participants further\nin the participation flow will get their token via email.\n",
+            "callParams": {
+                "pathName": "/api/v1/documents",
+                "method": "post",
+                "requestContentType": "application/json"
+            },
+            "metadata": {
+                "in": "./lib/schemas/createDocument.in.json",
+                "out": "./lib/schemas/createDocument.out.json"
+            }
+        },
+        "updateDocument": {
+            "main": "./lib/actions/action.js",
+            "title": "Update existing Document by its id",
+            "description": "Updates the Document for the given id and returns the updated resource on success.\n\n## Dispatch the document\n\nIt is possible to dispatch the document via updating its state to \"dispatched\".\nWhen doing so, the server runs several checks on the document, that is subject to be dispatched and\nresponds with `200 success` if the dispatch was successful. If the server was not able to the dispatch the\ndocument, it responds with `422 unprocessable entity`. There are different reasons for the server, to not\ndispatch a document which are:\n\n  - Document has no participants\n  - Document has blocks with duplicated slugs (duplicated slugs are returned by within the validation error)\n  - When the client tries to dispatch a document, that was already dispatched\n\n## Cancel the document\n\nA dispatched and not yet completed document can be cancelled by a user via updating its state to\n\"cancelled\". This will lead to all non completed participants getting disabled\nwith the reason \"cancelled\". All participants that got an email\nabout their participation will get an email about the cancellation.\n\nThe server responds with `422 unprocessable entity` when the client tries to cancel a document, that was\nwas not yet dispatched or already completed.\n",
+            "callParams": {
+                "pathName": "/api/v1/documents/{id}",
+                "method": "patch",
+                "requestContentType": "application/json"
+            },
+            "metadata": {
+                "in": "./lib/schemas/updateDocument.in.json",
+                "out": "./lib/schemas/updateDocument.out.json"
+            }
+        },
+        "getDocument": {
+            "main": "./lib/actions/action.js",
+            "title": "Get Document by its id",
+            "description": "Returns information about the Document for the given id.\n",
+            "callParams": {
+                "pathName": "/api/v1/documents/{id}",
+                "method": "get"
+            },
+            "metadata": {
+                "in": "./lib/schemas/getDocument.in.json",
+                "out": "./lib/schemas/getDocument.out.json"
+            }
+        },
+        "updateWebhook": {
+            "main": "./lib/actions/action.js",
+            "title": "Update an existing Webhook",
+            "description": "Updates the existing Webhook for the given id and returns the updated resource on success.\n",
+            "callParams": {
+                "pathName": "/api/v1/webhooks/{id}",
+                "method": "patch",
+                "requestContentType": "application/json"
+            },
+            "metadata": {
+                "in": "./lib/schemas/updateWebhook.in.json",
+                "out": "./lib/schemas/updateWebhook.out.json"
+            }
+        },
+        "destroyWebhook": {
+            "main": "./lib/actions/action.js",
+            "title": "Delete an existing Webhook by its id",
+            "description": "Destroys the Webhook for the given id returns an empty object on success.\n",
+            "callParams": {
+                "pathName": "/api/v1/webhooks/{id}",
+                "method": "delete"
+            },
+            "metadata": {
+                "in": "./lib/schemas/destroyWebhook.in.json",
+                "out": "./lib/schemas/destroyWebhook.out.json"
+            }
+        },
+        "getSubmission": {
+            "main": "./lib/actions/action.js",
+            "title": "Get Submission by its id",
+            "description": "Returns information about the Submission for the given id.\n\nSubmissions contain all data received from a recipient, including form field values, uploaded files, signatures\nand meta-data (timestamps, IP addresses etc).\n",
+            "callParams": {
+                "pathName": "/api/v1/submissions/{id}",
+                "method": "get"
+            },
+            "metadata": {
+                "in": "./lib/schemas/getSubmission.in.json",
+                "out": "./lib/schemas/getSubmission.out.json"
+            }
+        },
+        "createWebhook": {
+            "main": "./lib/actions/action.js",
+            "title": "Create a new Webhook",
+            "description": "Creates a new Webhook.\n",
+            "callParams": {
+                "pathName": "/api/v1/webhooks",
+                "method": "post",
+                "requestContentType": "application/json"
+            },
+            "metadata": {
+                "in": "./lib/schemas/createWebhook.in.json",
+                "out": "./lib/schemas/createWebhook.out.json"
+            }
+        },
+        "getWebhook": {
+            "main": "./lib/actions/action.js",
+            "title": "Get Webhook by its id",
+            "description": "Returns information about the Webhook for the given id.\n",
+            "callParams": {
+                "pathName": "/api/v1/webhooks/{id}",
+                "method": "get"
+            },
+            "metadata": {
+                "in": "./lib/schemas/getWebhook.in.json",
+                "out": "./lib/schemas/getWebhook.out.json"
+            }
+        },
+        "destroyDocument": {
+            "main": "./lib/actions/action.js",
+            "title": "Delete an existing Document by its id",
+            "description": "Destroys the Document for the given id and returns an empty object on success.\n",
+            "callParams": {
+                "pathName": "/api/v1/documents/{id}",
+                "method": "delete"
+            },
+            "metadata": {
+                "in": "./lib/schemas/destroyDocument.in.json",
+                "out": "./lib/schemas/destroyDocument.out.json"
+            }
+        },
+        "getTemplate": {
+            "main": "./lib/actions/action.js",
+            "title": "Get Template by its id",
+            "description": "Returns information about the Template for the given id.\n",
+            "callParams": {
+                "pathName": "/api/v1/templates/{id}",
+                "method": "get"
+            },
+            "metadata": {
+                "in": "./lib/schemas/getTemplate.in.json",
+                "out": "./lib/schemas/getTemplate.out.json"
+            }
+        }
+    }
+}

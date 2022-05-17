@@ -1,0 +1,45 @@
+{
+    "type": "object",
+    "properties": {
+        "data": {
+            "type": "array",
+            "items": {
+                "x-visibility": "public",
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                    "id",
+                    "oauth_application_id",
+                    "events",
+                    "hook_url"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "oauth_application_id": {
+                        "type": "number"
+                    },
+                    "events": {
+                        "type": "array",
+                        "items": {
+                            "type": "string",
+                            "enum": [
+                                "submission.completed",
+                                "document.created",
+                                "document.updated",
+                                "document.destroyed"
+                            ]
+                        }
+                    },
+                    "hook_url": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "count": {
+            "type": "number"
+        }
+    }
+}

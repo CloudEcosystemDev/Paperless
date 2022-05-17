@@ -1,0 +1,32 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "number"
+        },
+        "requestBody": {
+            "x-visibility": "public",
+            "type": "object",
+            "properties": {
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "submission.completed",
+                            "document.created",
+                            "document.updated",
+                            "document.destroyed"
+                        ]
+                    }
+                },
+                "hook_url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8192
+                }
+            }
+        }
+    }
+}

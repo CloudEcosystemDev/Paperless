@@ -1,0 +1,80 @@
+{
+    "type": "object",
+    "properties": {
+        "id": {
+            "required": true,
+            "type": "number"
+        },
+        "requestBody": {
+            "type": "object",
+            "x-visibility": "public",
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255
+                },
+                "description": {
+                    "type": "string",
+                    "minLength": 0,
+                    "maxLength": 65535
+                },
+                "state": {
+                    "type": "string",
+                    "enum": [
+                        "dispatched",
+                        "cancelled"
+                    ]
+                },
+                "archived_at": {
+                    "type": "string",
+                    "format": "date_time",
+                    "nullable": true
+                },
+                "settings": {
+                    "type": "object"
+                },
+                "reminder_settings": {
+                    "type": "object",
+                    "x-visibility": "public",
+                    "additionalProperties": false,
+                    "required": [
+                        "reminders_activated",
+                        "schedule"
+                    ],
+                    "properties": {
+                        "reminders_activated": {
+                            "type": "boolean"
+                        },
+                        "schedule": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "x-visibility": "public",
+                                "additionalProperties": false,
+                                "required": [
+                                    "number_of_days_since_dispatch"
+                                ],
+                                "properties": {
+                                    "number_of_days_since_dispatch": {
+                                        "type": "number",
+                                        "description": "Number of days after which a reminder is send, relative the point in time when a participant received his first email."
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "styles": {
+                    "type": "object"
+                },
+                "participation_completed_redirect_url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8192,
+                    "nullable": true
+                }
+            }
+        }
+    }
+}
