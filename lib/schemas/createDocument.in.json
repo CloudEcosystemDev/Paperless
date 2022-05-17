@@ -1,0 +1,308 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "anyOf": [
+                {
+                    "title": "Create Document from Template",
+                    "type": "object",
+                    "x-visibility": "public",
+                    "required": [
+                        "workspace_id",
+                        "template_id",
+                        "name"
+                    ],
+                    "properties": {
+                        "workspace_id": {
+                            "type": "number",
+                            "description": "The id of Workspace the new Document will be placed in"
+                        },
+                        "template_id": {
+                            "type": "number",
+                            "description": "The id of the Template you want to use as a blueprint for the new Document"
+                        },
+                        "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 255
+                        },
+                        "description": {
+                            "type": "string",
+                            "minLength": 0,
+                            "maxLength": 65535
+                        },
+                        "state": {
+                            "type": "string",
+                            "description": "Omit if you just want to create a new Document, set to `dispatched` if you want to dispatch the new Document immediately",
+                            "enum": [
+                                "dispatched"
+                            ]
+                        },
+                        "participants_dispatch_strategy": {
+                            "type": "string",
+                            "enum": [
+                                "email",
+                                "api_response_initial_participants"
+                            ]
+                        },
+                        "participants": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "minLength": 1,
+                                        "maxLength": 255
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "minLength": 1,
+                                        "maxLength": 255
+                                    }
+                                }
+                            }
+                        },
+                        "tokens": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string",
+                                "nullable": true,
+                                "minLength": 0,
+                                "maxLength": 65535
+                            }
+                        },
+                        "settings": {
+                            "type": "object"
+                        },
+                        "reminder_settings": {
+                            "type": "object",
+                            "x-visibility": "public",
+                            "additionalProperties": false,
+                            "required": [
+                                "reminders_activated",
+                                "schedule"
+                            ],
+                            "properties": {
+                                "reminders_activated": {
+                                    "type": "boolean"
+                                },
+                                "schedule": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "x-visibility": "public",
+                                        "additionalProperties": false,
+                                        "required": [
+                                            "number_of_days_since_dispatch"
+                                        ],
+                                        "properties": {
+                                            "number_of_days_since_dispatch": {
+                                                "type": "number",
+                                                "description": "Number of days after which a reminder is send, relative the point in time when a participant received his first email."
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "styles": {
+                            "type": "object"
+                        },
+                        "participation_completed_redirect_url": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 8192
+                        }
+                    }
+                },
+                {
+                    "title": "Duplicate existing Document",
+                    "type": "object",
+                    "x-visibility": "public",
+                    "required": [
+                        "workspace_id",
+                        "document_id",
+                        "name"
+                    ],
+                    "properties": {
+                        "workspace_id": {
+                            "type": "number"
+                        },
+                        "document_id": {
+                            "type": "number"
+                        },
+                        "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 255
+                        },
+                        "description": {
+                            "type": "string",
+                            "minLength": 0,
+                            "maxLength": 65535
+                        },
+                        "state": {
+                            "type": "string",
+                            "enum": [
+                                "dispatched"
+                            ]
+                        },
+                        "participants_dispatch_strategy": {
+                            "type": "string",
+                            "enum": [
+                                "email",
+                                "api_response_initial_participants"
+                            ]
+                        },
+                        "participants": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "object",
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "minLength": 1,
+                                        "maxLength": 255
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "nullable": true,
+                                        "minLength": 1,
+                                        "maxLength": 255
+                                    },
+                                    "receive_submission_completed_mail": {
+                                        "type": "boolean"
+                                    }
+                                }
+                            }
+                        },
+                        "tokens": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string",
+                                "nullable": true,
+                                "minLength": 0,
+                                "maxLength": 65535
+                            }
+                        },
+                        "settings": {
+                            "type": "object"
+                        },
+                        "reminder_settings": {
+                            "type": "object",
+                            "x-visibility": "public",
+                            "additionalProperties": false,
+                            "required": [
+                                "reminders_activated",
+                                "schedule"
+                            ],
+                            "properties": {
+                                "reminders_activated": {
+                                    "type": "boolean"
+                                },
+                                "schedule": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "x-visibility": "public",
+                                        "additionalProperties": false,
+                                        "required": [
+                                            "number_of_days_since_dispatch"
+                                        ],
+                                        "properties": {
+                                            "number_of_days_since_dispatch": {
+                                                "type": "number",
+                                                "description": "Number of days after which a reminder is send, relative the point in time when a participant received his first email."
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "styles": {
+                            "type": "object"
+                        },
+                        "participation_completed_redirect_url": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 8192
+                        }
+                    }
+                },
+                {
+                    "title": "Create new Document from scratch",
+                    "type": "object",
+                    "x-visibility": "public",
+                    "required": [
+                        "workspace_id",
+                        "name"
+                    ],
+                    "properties": {
+                        "workspace_id": {
+                            "type": "number"
+                        },
+                        "document_id": {
+                            "type": "number"
+                        },
+                        "name": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 255
+                        },
+                        "description": {
+                            "type": "string",
+                            "minLength": 0,
+                            "maxLength": 65535
+                        },
+                        "settings": {
+                            "type": "object"
+                        },
+                        "reminder_settings": {
+                            "type": "object",
+                            "x-visibility": "public",
+                            "additionalProperties": false,
+                            "required": [
+                                "reminders_activated",
+                                "schedule"
+                            ],
+                            "properties": {
+                                "reminders_activated": {
+                                    "type": "boolean"
+                                },
+                                "schedule": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "x-visibility": "public",
+                                        "additionalProperties": false,
+                                        "required": [
+                                            "number_of_days_since_dispatch"
+                                        ],
+                                        "properties": {
+                                            "number_of_days_since_dispatch": {
+                                                "type": "number",
+                                                "description": "Number of days after which a reminder is send, relative the point in time when a participant received his first email."
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "styles": {
+                            "type": "object"
+                        },
+                        "participation_completed_redirect_url": {
+                            "type": "string",
+                            "minLength": 1,
+                            "maxLength": 8192
+                        }
+                    }
+                }
+            ]
+        }
+    }
+}

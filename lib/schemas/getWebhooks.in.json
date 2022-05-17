@@ -1,0 +1,30 @@
+{
+    "type": "object",
+    "properties": {
+        "per": {
+            "required": false,
+            "type": "number",
+            "minimum": 1
+        },
+        "page": {
+            "required": false,
+            "type": "number",
+            "minimum": 1
+        },
+        "q": {
+            "required": false,
+            "type": "string",
+            "minLength": 1
+        },
+        "sort": {
+            "required": false,
+            "type": "string",
+            "minLength": 1
+        },
+        "oauth_application_id": {
+            "required": true,
+            "type": "number",
+            "minimum": 1
+        }
+    }
+}

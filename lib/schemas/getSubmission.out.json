@@ -1,0 +1,250 @@
+{
+    "x-visibility": "public",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "id",
+        "submittable_id",
+        "pdf_url",
+        "audit_trail_pdf_url",
+        "sealed_pdf_url",
+        "dispatched_at",
+        "completed_at",
+        "dispatching_user",
+        "aggregated_submit_event_values",
+        "updated_at",
+        "created_at"
+    ],
+    "properties": {
+        "id": {
+            "type": "integer"
+        },
+        "submittable_id": {
+            "type": "integer"
+        },
+        "pdf_url": {
+            "type": "string",
+            "nullable": true
+        },
+        "audit_trail_pdf_url": {
+            "type": "string",
+            "nullable": true
+        },
+        "sealed_pdf_url": {
+            "type": "string",
+            "nullable": true
+        },
+        "dispatched_at": {
+            "type": "string",
+            "format": "date_time",
+            "nullable": true
+        },
+        "started_at": {
+            "type": "string",
+            "format": "date_time",
+            "nullable": true
+        },
+        "completed_at": {
+            "type": "string",
+            "format": "date_time",
+            "nullable": true
+        },
+        "dispatching_user": {
+            "type": "object",
+            "x-visibility": "public",
+            "additionalProperties": false,
+            "required": [
+                "id",
+                "name",
+                "email",
+                "locale",
+                "avatar_url",
+                "updated_at",
+                "created_at"
+            ],
+            "properties": {
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "position": {
+                    "type": "string",
+                    "nullable": true
+                },
+                "email": {
+                    "type": "string"
+                },
+                "email_verified": {
+                    "type": "boolean"
+                },
+                "locale": {
+                    "type": "string",
+                    "x-visibility": "public",
+                    "enum": [
+                        "de_DE",
+                        "en_US"
+                    ]
+                },
+                "avatar_url": {
+                    "type": "string",
+                    "nullable": true
+                },
+                "settings": {
+                    "type": "object"
+                },
+                "notification_settings": {
+                    "type": "object"
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "date_time"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date_time"
+                }
+            }
+        },
+        "aggregated_submit_event_values": {
+            "type": "array",
+            "items": {
+                "x-visibility": "public",
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                    "id",
+                    "block_id",
+                    "block_type",
+                    "slug",
+                    "value",
+                    "mapped_value",
+                    "participant_id"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "block_id": {
+                        "type": "integer"
+                    },
+                    "block_type": {
+                        "type": "string",
+                        "enum": [
+                            "Block::Input::BankAccountInput",
+                            "Block::Input::CheckboxInput",
+                            "Block::Input::DateInput",
+                            "Block::Input::FileUploadInput",
+                            "Block::Input::RadioInput",
+                            "Block::Input::SelectInput",
+                            "Block::Input::SignatureInput",
+                            "Block::Input::TextInput"
+                        ]
+                    },
+                    "slug": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255
+                    },
+                    "value": {
+                        "type": "string",
+                        "nullable": true,
+                        "minLength": 0,
+                        "maxLength": 65535
+                    },
+                    "mapped_value": {
+                        "type": "string",
+                        "nullable": true,
+                        "minLength": 0,
+                        "maxLength": 65535
+                    },
+                    "participant_id": {
+                        "type": "integer"
+                    },
+                    "file": {
+                        "oneOf": [
+                            {
+                                "x-visibility": "public",
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "id": {
+                                        "type": "number"
+                                    },
+                                    "key": {
+                                        "type": "string"
+                                    },
+                                    "filename": {
+                                        "type": "string"
+                                    },
+                                    "content_type": {
+                                        "type": "string"
+                                    },
+                                    "metadata": {
+                                        "type": "object"
+                                    },
+                                    "byte_size": {
+                                        "type": "number"
+                                    },
+                                    "checksum": {
+                                        "type": "string"
+                                    },
+                                    "service_name": {
+                                        "type": "string"
+                                    },
+                                    "signed_id": {
+                                        "type": "string"
+                                    },
+                                    "attachable_sgid": {
+                                        "type": "string"
+                                    },
+                                    "direct_upload": {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "required": [
+                                            "url",
+                                            "headers"
+                                        ],
+                                        "properties": {
+                                            "url": {
+                                                "type": "string"
+                                            },
+                                            "headers": {
+                                                "type": "object",
+                                                "additionalProperties": true,
+                                                "required": [
+                                                    "Content-Type"
+                                                ],
+                                                "properties": {
+                                                    "Content-Type": {
+                                                        "type": "string"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "format": "date_time"
+                                    },
+                                    "url": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        "updated_at": {
+            "type": "string",
+            "format": "date_time"
+        },
+        "created_at": {
+            "type": "string",
+            "format": "date_time"
+        }
+    }
+}

@@ -1,0 +1,1086 @@
+{
+    "x-visibility": "public",
+    "type": "object",
+    "additionalProperties": false,
+    "required": [
+        "id",
+        "workspace_id",
+        "name",
+        "description",
+        "page_count",
+        "has_inputs",
+        "usage_count",
+        "settings",
+        "reminder_settings",
+        "styles",
+        "participation_completed_redirect_url",
+        "updated_at",
+        "created_at"
+    ],
+    "properties": {
+        "id": {
+            "type": "integer"
+        },
+        "creator": {
+            "oneOf": [
+                {
+                    "type": "object",
+                    "x-visibility": "public",
+                    "additionalProperties": false,
+                    "required": [
+                        "id",
+                        "name",
+                        "email",
+                        "locale",
+                        "avatar_url",
+                        "updated_at",
+                        "created_at"
+                    ],
+                    "properties": {
+                        "id": {
+                            "type": "integer"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "position": {
+                            "type": "string",
+                            "nullable": true
+                        },
+                        "email": {
+                            "type": "string"
+                        },
+                        "email_verified": {
+                            "type": "boolean"
+                        },
+                        "locale": {
+                            "type": "string",
+                            "x-visibility": "public",
+                            "enum": [
+                                "de_DE",
+                                "en_US"
+                            ]
+                        },
+                        "avatar_url": {
+                            "type": "string",
+                            "nullable": true
+                        },
+                        "settings": {
+                            "type": "object"
+                        },
+                        "notification_settings": {
+                            "type": "object"
+                        },
+                        "updated_at": {
+                            "type": "string",
+                            "format": "date_time"
+                        },
+                        "created_at": {
+                            "type": "string",
+                            "format": "date_time"
+                        }
+                    }
+                }
+            ]
+        },
+        "workspace_id": {
+            "type": "number"
+        },
+        "name": {
+            "type": "string"
+        },
+        "description": {
+            "type": "string"
+        },
+        "page_count": {
+            "type": "number"
+        },
+        "has_inputs": {
+            "type": "boolean"
+        },
+        "usage_count": {
+            "type": "number"
+        },
+        "settings": {
+            "type": "object"
+        },
+        "reminder_settings": {
+            "type": "object",
+            "x-visibility": "public",
+            "additionalProperties": false,
+            "required": [
+                "reminders_activated",
+                "schedule"
+            ],
+            "properties": {
+                "reminders_activated": {
+                    "type": "boolean"
+                },
+                "schedule": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-visibility": "public",
+                        "additionalProperties": false,
+                        "required": [
+                            "number_of_days_since_dispatch"
+                        ],
+                        "properties": {
+                            "number_of_days_since_dispatch": {
+                                "type": "number",
+                                "description": "Number of days after which a reminder is send, relative the point in time when a participant received his first email."
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "styles": {
+            "type": "object"
+        },
+        "participants": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "x-visibility": "public",
+                "additionalProperties": false,
+                "required": [
+                    "id",
+                    "replaced_by_participant_id",
+                    "role",
+                    "email",
+                    "name",
+                    "locale",
+                    "state",
+                    "dispatch_strategy",
+                    "progress",
+                    "terms_and_conditions_approved_at",
+                    "color",
+                    "slot_name",
+                    "description",
+                    "dispatch_failed_reason",
+                    "dispatch_failed_message",
+                    "skipped_reason",
+                    "disabled_reason",
+                    "waiting_at",
+                    "dispatching_at",
+                    "dispatch_failed_at",
+                    "dispatch_completed_at",
+                    "opened_at",
+                    "started_at",
+                    "completed_at",
+                    "skipped_at",
+                    "disabled_at",
+                    "receive_submission_completed_mail",
+                    "updated_at",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "replaced_by_participant_id": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "role": {
+                        "type": "string",
+                        "enum": [
+                            "default",
+                            "viewer",
+                            "approver",
+                            "copy_receiver"
+                        ]
+                    },
+                    "email": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Can be null in state `initialized`."
+                    },
+                    "name": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Can be null in state `initialized`."
+                    },
+                    "locale": {
+                        "type": "string",
+                        "x-visibility": "public",
+                        "enum": [
+                            "de_DE",
+                            "en_US"
+                        ]
+                    },
+                    "state": {
+                        "type": "string",
+                        "enum": [
+                            "initialized",
+                            "waiting",
+                            "dispatching",
+                            "dispatch_failed",
+                            "dispatch_completed",
+                            "opened",
+                            "started",
+                            "completed",
+                            "skipped",
+                            "disabled"
+                        ]
+                    },
+                    "dispatch_strategy": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "enum": [
+                                    "noop",
+                                    "email",
+                                    "api_response_initial_participants"
+                                ]
+                            }
+                        ]
+                    },
+                    "token": {
+                        "type": "string"
+                    },
+                    "progress": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "additionalProperties": false,
+                            "required": [
+                                "position",
+                                "block_id",
+                                "block_type",
+                                "block_name",
+                                "state"
+                            ],
+                            "properties": {
+                                "position": {
+                                    "type": "integer"
+                                },
+                                "block_id": {
+                                    "type": "integer"
+                                },
+                                "block_type": {
+                                    "type": "string",
+                                    "enum": [
+                                        "Block::Page"
+                                    ]
+                                },
+                                "block_name": {
+                                    "type": "string"
+                                },
+                                "state": {
+                                    "type": "string",
+                                    "enum": [
+                                        "untouched",
+                                        "opened",
+                                        "started",
+                                        "completed"
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "terms_and_conditions_approved_at": {
+                        "type": "string",
+                        "format": "date_time",
+                        "nullable": true
+                    },
+                    "color": {
+                        "type": "string",
+                        "x-visibility": "public",
+                        "pattern": "^#[0-9a-f]{6}$",
+                        "description": "Hexadecimal color with 6 digits and leading \"#\"",
+                        "example": "#abcdef"
+                    },
+                    "slot_name": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "description": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "dispatch_failed_reason": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "enum": [
+                                    "dropped",
+                                    "bounce_bounce",
+                                    "bounce_blocked"
+                                ]
+                            }
+                        ]
+                    },
+                    "dispatch_failed_message": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "skipped_reason": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "enum": [
+                                    "or_join_node"
+                                ]
+                            }
+                        ]
+                    },
+                    "disabled_reason": {
+                        "oneOf": [
+                            {
+                                "type": "string",
+                                "enum": [
+                                    "undeliverable",
+                                    "manual_correction",
+                                    "cancelled"
+                                ]
+                            }
+                        ]
+                    },
+                    "waiting_at": {
+                        "type": "string",
+                        "format": "date_time",
+                        "nullable": true
+                    },
+                    "dispatching_at": {
+                        "type": "string",
+                        "format": "date_time",
+                        "nullable": true
+                    },
+                    "dispatch_failed_at": {
+                        "type": "string",
+                        "format": "date_time",
+                        "nullable": true
+                    },
+                    "dispatch_completed_at": {
+                        "type": "string",
+                        "format": "date_time",
+                        "nullable": true
+                    },
+                    "opened_at": {
+                        "type": "string",
+                        "format": "date_time",
+                        "nullable": true
+                    },
+                    "started_at": {
+                        "type": "string",
+                        "format": "date_time",
+                        "nullable": true
+                    },
+                    "completed_at": {
+                        "type": "string",
+                        "format": "date_time",
+                        "nullable": true
+                    },
+                    "skipped_at": {
+                        "type": "string",
+                        "format": "date_time",
+                        "nullable": true
+                    },
+                    "disabled_at": {
+                        "type": "string",
+                        "format": "date_time",
+                        "nullable": true
+                    },
+                    "receive_submission_completed_mail": {
+                        "type": "boolean"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date_time"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date_time"
+                    }
+                }
+            }
+        },
+        "participation_flow": {
+            "type": "object",
+            "x-visibility": "public",
+            "additionalProperties": false,
+            "required": [
+                "id",
+                "nodes",
+                "edges",
+                "updated_at",
+                "created_at"
+            ],
+            "properties": {
+                "id": {
+                    "type": "number"
+                },
+                "nodes": {
+                    "type": "array",
+                    "items": {
+                        "x-visibility": "public",
+                        "oneOf": [
+                            {
+                                "type": "object",
+                                "x-visibility": "public",
+                                "required": [
+                                    "id",
+                                    "local_uuid",
+                                    "type",
+                                    "executed",
+                                    "completed",
+                                    "updated_at",
+                                    "created_at"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "number"
+                                    },
+                                    "local_uuid": {
+                                        "oneOf": [
+                                            {
+                                                "type": "string",
+                                                "x-visibility": "public",
+                                                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                                            }
+                                        ]
+                                    },
+                                    "type": {
+                                        "x-visibility": "public",
+                                        "type": "string",
+                                        "enum": [
+                                            "ParticipationFlow::StartNode"
+                                        ]
+                                    },
+                                    "executed": {
+                                        "type": "boolean"
+                                    },
+                                    "completed": {
+                                        "type": "boolean"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "format": "date_time"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "format": "date_time"
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "x-visibility": "public",
+                                "required": [
+                                    "id",
+                                    "local_uuid",
+                                    "type",
+                                    "executed",
+                                    "completed",
+                                    "updated_at",
+                                    "created_at"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "number"
+                                    },
+                                    "local_uuid": {
+                                        "oneOf": [
+                                            {
+                                                "type": "string",
+                                                "x-visibility": "public",
+                                                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                                            }
+                                        ]
+                                    },
+                                    "type": {
+                                        "x-visibility": "public",
+                                        "type": "string",
+                                        "enum": [
+                                            "ParticipationFlow::EndNode"
+                                        ]
+                                    },
+                                    "executed": {
+                                        "type": "boolean"
+                                    },
+                                    "completed": {
+                                        "type": "boolean"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "format": "date_time"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "format": "date_time"
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "x-visibility": "public",
+                                "required": [
+                                    "id",
+                                    "local_uuid",
+                                    "type",
+                                    "executed",
+                                    "completed",
+                                    "updated_at",
+                                    "created_at"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "number"
+                                    },
+                                    "local_uuid": {
+                                        "oneOf": [
+                                            {
+                                                "type": "string",
+                                                "x-visibility": "public",
+                                                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                                            }
+                                        ]
+                                    },
+                                    "type": {
+                                        "x-visibility": "public",
+                                        "type": "string",
+                                        "enum": [
+                                            "ParticipationFlow::ParticipantNode"
+                                        ]
+                                    },
+                                    "executed": {
+                                        "type": "boolean"
+                                    },
+                                    "completed": {
+                                        "type": "boolean"
+                                    },
+                                    "participant": {
+                                        "type": "object",
+                                        "x-visibility": "public",
+                                        "additionalProperties": false,
+                                        "required": [
+                                            "id",
+                                            "replaced_by_participant_id",
+                                            "role",
+                                            "email",
+                                            "name",
+                                            "locale",
+                                            "state",
+                                            "dispatch_strategy",
+                                            "progress",
+                                            "terms_and_conditions_approved_at",
+                                            "color",
+                                            "slot_name",
+                                            "description",
+                                            "dispatch_failed_reason",
+                                            "dispatch_failed_message",
+                                            "skipped_reason",
+                                            "disabled_reason",
+                                            "waiting_at",
+                                            "dispatching_at",
+                                            "dispatch_failed_at",
+                                            "dispatch_completed_at",
+                                            "opened_at",
+                                            "started_at",
+                                            "completed_at",
+                                            "skipped_at",
+                                            "disabled_at",
+                                            "receive_submission_completed_mail",
+                                            "updated_at",
+                                            "created_at"
+                                        ],
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "replaced_by_participant_id": {
+                                                "type": "integer",
+                                                "nullable": true
+                                            },
+                                            "role": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "default",
+                                                    "viewer",
+                                                    "approver",
+                                                    "copy_receiver"
+                                                ]
+                                            },
+                                            "email": {
+                                                "type": "string",
+                                                "nullable": true,
+                                                "description": "Can be null in state `initialized`."
+                                            },
+                                            "name": {
+                                                "type": "string",
+                                                "nullable": true,
+                                                "description": "Can be null in state `initialized`."
+                                            },
+                                            "locale": {
+                                                "type": "string",
+                                                "x-visibility": "public",
+                                                "enum": [
+                                                    "de_DE",
+                                                    "en_US"
+                                                ]
+                                            },
+                                            "state": {
+                                                "type": "string",
+                                                "enum": [
+                                                    "initialized",
+                                                    "waiting",
+                                                    "dispatching",
+                                                    "dispatch_failed",
+                                                    "dispatch_completed",
+                                                    "opened",
+                                                    "started",
+                                                    "completed",
+                                                    "skipped",
+                                                    "disabled"
+                                                ]
+                                            },
+                                            "dispatch_strategy": {
+                                                "oneOf": [
+                                                    {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "noop",
+                                                            "email",
+                                                            "api_response_initial_participants"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "token": {
+                                                "type": "string"
+                                            },
+                                            "progress": {
+                                                "type": "array",
+                                                "items": {
+                                                    "type": "object",
+                                                    "additionalProperties": false,
+                                                    "required": [
+                                                        "position",
+                                                        "block_id",
+                                                        "block_type",
+                                                        "block_name",
+                                                        "state"
+                                                    ],
+                                                    "properties": {
+                                                        "position": {
+                                                            "type": "integer"
+                                                        },
+                                                        "block_id": {
+                                                            "type": "integer"
+                                                        },
+                                                        "block_type": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "Block::Page"
+                                                            ]
+                                                        },
+                                                        "block_name": {
+                                                            "type": "string"
+                                                        },
+                                                        "state": {
+                                                            "type": "string",
+                                                            "enum": [
+                                                                "untouched",
+                                                                "opened",
+                                                                "started",
+                                                                "completed"
+                                                            ]
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "terms_and_conditions_approved_at": {
+                                                "type": "string",
+                                                "format": "date_time",
+                                                "nullable": true
+                                            },
+                                            "color": {
+                                                "type": "string",
+                                                "x-visibility": "public",
+                                                "pattern": "^#[0-9a-f]{6}$",
+                                                "description": "Hexadecimal color with 6 digits and leading \"#\"",
+                                                "example": "#abcdef"
+                                            },
+                                            "slot_name": {
+                                                "type": "string",
+                                                "nullable": true
+                                            },
+                                            "description": {
+                                                "type": "string",
+                                                "nullable": true
+                                            },
+                                            "dispatch_failed_reason": {
+                                                "oneOf": [
+                                                    {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "dropped",
+                                                            "bounce_bounce",
+                                                            "bounce_blocked"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "dispatch_failed_message": {
+                                                "type": "string",
+                                                "nullable": true
+                                            },
+                                            "skipped_reason": {
+                                                "oneOf": [
+                                                    {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "or_join_node"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "disabled_reason": {
+                                                "oneOf": [
+                                                    {
+                                                        "type": "string",
+                                                        "enum": [
+                                                            "undeliverable",
+                                                            "manual_correction",
+                                                            "cancelled"
+                                                        ]
+                                                    }
+                                                ]
+                                            },
+                                            "waiting_at": {
+                                                "type": "string",
+                                                "format": "date_time",
+                                                "nullable": true
+                                            },
+                                            "dispatching_at": {
+                                                "type": "string",
+                                                "format": "date_time",
+                                                "nullable": true
+                                            },
+                                            "dispatch_failed_at": {
+                                                "type": "string",
+                                                "format": "date_time",
+                                                "nullable": true
+                                            },
+                                            "dispatch_completed_at": {
+                                                "type": "string",
+                                                "format": "date_time",
+                                                "nullable": true
+                                            },
+                                            "opened_at": {
+                                                "type": "string",
+                                                "format": "date_time",
+                                                "nullable": true
+                                            },
+                                            "started_at": {
+                                                "type": "string",
+                                                "format": "date_time",
+                                                "nullable": true
+                                            },
+                                            "completed_at": {
+                                                "type": "string",
+                                                "format": "date_time",
+                                                "nullable": true
+                                            },
+                                            "skipped_at": {
+                                                "type": "string",
+                                                "format": "date_time",
+                                                "nullable": true
+                                            },
+                                            "disabled_at": {
+                                                "type": "string",
+                                                "format": "date_time",
+                                                "nullable": true
+                                            },
+                                            "receive_submission_completed_mail": {
+                                                "type": "boolean"
+                                            },
+                                            "updated_at": {
+                                                "type": "string",
+                                                "format": "date_time"
+                                            },
+                                            "created_at": {
+                                                "type": "string",
+                                                "format": "date_time"
+                                            }
+                                        }
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "format": "date_time"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "format": "date_time"
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "x-visibility": "public",
+                                "required": [
+                                    "id",
+                                    "local_uuid",
+                                    "type",
+                                    "executed",
+                                    "completed",
+                                    "updated_at",
+                                    "created_at"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "number"
+                                    },
+                                    "local_uuid": {
+                                        "oneOf": [
+                                            {
+                                                "type": "string",
+                                                "x-visibility": "public",
+                                                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                                            }
+                                        ]
+                                    },
+                                    "type": {
+                                        "x-visibility": "public",
+                                        "type": "string",
+                                        "enum": [
+                                            "ParticipationFlow::AndJoinNode"
+                                        ]
+                                    },
+                                    "executed": {
+                                        "type": "boolean"
+                                    },
+                                    "completed": {
+                                        "type": "boolean"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "format": "date_time"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "format": "date_time"
+                                    }
+                                }
+                            },
+                            {
+                                "type": "object",
+                                "x-visibility": "public",
+                                "required": [
+                                    "id",
+                                    "local_uuid",
+                                    "type",
+                                    "executed",
+                                    "completed",
+                                    "updated_at",
+                                    "created_at"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "type": "number"
+                                    },
+                                    "local_uuid": {
+                                        "oneOf": [
+                                            {
+                                                "type": "string",
+                                                "x-visibility": "public",
+                                                "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                                            }
+                                        ]
+                                    },
+                                    "type": {
+                                        "x-visibility": "public",
+                                        "type": "string",
+                                        "enum": [
+                                            "ParticipationFlow::OrJoinNode"
+                                        ]
+                                    },
+                                    "executed": {
+                                        "type": "boolean"
+                                    },
+                                    "completed": {
+                                        "type": "boolean"
+                                    },
+                                    "updated_at": {
+                                        "type": "string",
+                                        "format": "date_time"
+                                    },
+                                    "created_at": {
+                                        "type": "string",
+                                        "format": "date_time"
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                "edges": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "x-visibility": "public",
+                        "required": [
+                            "id",
+                            "local_uuid",
+                            "source_id",
+                            "destination_id",
+                            "updated_at",
+                            "created_at"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "number"
+                            },
+                            "local_uuid": {
+                                "oneOf": [
+                                    {
+                                        "type": "string",
+                                        "x-visibility": "public",
+                                        "pattern": "^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$"
+                                    }
+                                ]
+                            },
+                            "source_id": {
+                                "type": "number"
+                            },
+                            "destination_id": {
+                                "type": "number"
+                            },
+                            "updated_at": {
+                                "type": "string",
+                                "format": "date_time"
+                            },
+                            "created_at": {
+                                "type": "string",
+                                "format": "date_time"
+                            }
+                        }
+                    }
+                },
+                "updated_at": {
+                    "type": "string",
+                    "format": "date_time"
+                },
+                "created_at": {
+                    "type": "string",
+                    "format": "date_time"
+                }
+            }
+        },
+        "designs": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "x-visibility": "public",
+                "additionalProperties": false,
+                "required": [
+                    "id",
+                    "type",
+                    "organization_id",
+                    "workspace_id",
+                    "bucket_id",
+                    "bucket_type",
+                    "updated_at",
+                    "created_at"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "integer"
+                    },
+                    "type": {
+                        "type": "string",
+                        "enum": [
+                            "Design::BrandDesign",
+                            "Design::SubmissionDesign",
+                            "Design::EmailDesign",
+                            "Design::ExportDesign"
+                        ]
+                    },
+                    "organization_id": {
+                        "type": "integer"
+                    },
+                    "workspace_id": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "bucket_id": {
+                        "type": "integer",
+                        "nullable": true
+                    },
+                    "bucket_type": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "logo_url": {
+                        "type": "string",
+                        "nullable": true
+                    },
+                    "brand_settings": {
+                        "type": "object"
+                    },
+                    "brand_styles": {
+                        "type": "object"
+                    },
+                    "submission_settings": {
+                        "type": "object"
+                    },
+                    "submission_styles": {
+                        "type": "object"
+                    },
+                    "email_settings": {
+                        "type": "object"
+                    },
+                    "email_styles": {
+                        "type": "object"
+                    },
+                    "export_settings": {
+                        "type": "object"
+                    },
+                    "export_styles": {
+                        "type": "object"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date_time"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date_time"
+                    }
+                }
+            }
+        },
+        "participation_completed_redirect_url": {
+            "type": "string",
+            "nullable": true
+        },
+        "shared_forms": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "properties": {
+                    "id": {
+                        "type": "number"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "updated_at": {
+            "type": "string",
+            "format": "date_time"
+        },
+        "created_at": {
+            "type": "string",
+            "format": "date_time"
+        }
+    }
+}

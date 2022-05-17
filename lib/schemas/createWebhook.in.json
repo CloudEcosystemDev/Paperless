@@ -1,0 +1,35 @@
+{
+    "type": "object",
+    "properties": {
+        "requestBody": {
+            "x-visibility": "public",
+            "type": "object",
+            "required": [
+                "events",
+                "hook_url"
+            ],
+            "properties": {
+                "events": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "submission.completed",
+                            "document.created",
+                            "document.updated",
+                            "document.destroyed"
+                        ]
+                    }
+                },
+                "oauth_application_id": {
+                    "type": "number"
+                },
+                "hook_url": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 8192
+                }
+            }
+        }
+    }
+}
